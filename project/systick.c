@@ -31,3 +31,14 @@ SysTick_t GetSystemTick(void)
 {
 	return systemTickCounter;
 }
+
+void Delay_ms(unsigned int ms)
+{
+	SysTick_t t = GetSystemTick();
+	t += ms;
+	while(GetSystemTick() < t){
+		SCB->SCR &= (uint32_t)~((uint32_t)SCB_SCR_SLEEPONEXIT); // Reset SLEEPONEXIT
+        SCB->SCR &= (uint32_t)~((uint32_t)SCB_SCR_SLEEPDEEP);   // Clear SLEEPDEEP bit
+        __WFI();                                                // Request Wait For Interrupt
+	}
+}
