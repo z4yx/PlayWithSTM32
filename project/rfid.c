@@ -29,6 +29,8 @@ void InitRc522(void)
 *******************************************************************************/
 void InitSPI(void)
 {
+    SPI_InitTypeDef SPI_InitStructure;
+
     GPIO_InitTypeDef GPIO_InitStructure;
     RCC_APB2PeriphClockCmd(RC522_PORT_RCC, ENABLE);
 
@@ -38,23 +40,31 @@ void InitSPI(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
     GPIO_Init(RC522_PORT, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = RC522_PIN_MOSI|RC522_PIN_CLK;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;       //推挽输出
+    GPIO_InitStructure.GPIO_Pin = RC522_PIN_MOSI | RC522_PIN_CLK;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
     GPIO_Init(RC522_PORT, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin =RC522_PIN_RST|RC522_PIN_CS; //PB5 PB1
+    GPIO_InitStructure.GPIO_Pin = RC522_PIN_RST | RC522_PIN_CS;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(RC522_PORT, &GPIO_InitStructure);
+
     GPIO_SetBits(RC522_PORT, RC522_PIN_RST);
+    GPIO_SetBits(RC522_PORT, RC522_PIN_CS);
+
+    RCC_APB1PeriphClockCmd(RC522_SPI_RCC, ENABLE);
+    SPI_StructInit(&SPI_InitStructure);
+    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+    SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
+    SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
+    SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
+    SPI_InitStructure.SPI_BaudRatePrescaler =
+        SPI_BaudRatePrescaler_128;
+    SPI_Init(RC522_SPI, &SPI_InitStructure);
+    SPI_Cmd(RC522_SPI, ENABLE);
 }
-/*******************************************************************************
-* 描  述  :  初始化所有设置，串口波特率115200
-* 输  入  :  无
-* 输  出  :  无
-* 返  回  :  无
-*******************************************************************************/
+
 void RFID_Config(void)
 {
     InitSPI();

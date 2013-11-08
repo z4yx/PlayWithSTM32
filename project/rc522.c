@@ -16,53 +16,17 @@ static void CalulateCRC(unsigned char *pIndata, unsigned char len, unsigned char
 static unsigned char ReadRawRC(unsigned char Address);
 
 /////////////////////////////////////////////////////////////////////
-//功    能：SPI写数据
+//功    能：SPI读写数据
 //输    入： 无
 // 无返回值
 /////////////////////////////////////////////////////////////////////
-static void Write_SPI(unsigned char num)
+static unsigned char WriteRead_SPI(unsigned char val)
 {
-    u8 count = 0, i;
-    for (count = 0; count < 8; count++)
-    {
-        if (num & 0x80)TDIN_SET(1);
-        else TDIN_SET(0);
-        num <<= 1;
-        TCLK_SET(0);//上升沿有效
-        for (i = 0; i < 15; i++);
-        TCLK_SET(1);
-        for (i = 0; i < 15; i++);
-    }
+    while (SPI_I2S_GetFlagStatus(RC522_SPI, SPI_I2S_FLAG_TXE) == RESET);
+    SPI_I2S_SendData(RC522_SPI, val);
 
-}
-/////////////////////////////////////////////////////////////////////
-//功    能：SPI读数据
-//输    入： 无
-//返    回:    无
-/////////////////////////////////////////////////////////////////////
-static unsigned char Read_SPI(void)
-{
-
-    unsigned char SPICount, i;                                      // Counter used to clock out the data
-
-    unsigned char  SPIData;
-    SPIData = 0;                    //下降沿有效
-    for (SPICount = 0; SPICount < 8; SPICount++)                  // Prepare to clock in the data to be read
-    {
-        SPIData <<= 1;                                              // Rotate the data
-
-        TCLK_SET(0);
-        for (i = 0; i < 15; i++);                                // Raise the clock to clock the data out of the MAX7456
-        if (DOUT)
-        {
-            SPIData |= 0x01;
-        }
-        TCLK_SET(1);
-        for (i = 0; i < 15; i++);
-        // Drop the clock ready for the next bit
-    }                                                            // and loop back
-    return (SPIData);
-
+    while (SPI_I2S_GetFlagStatus(RC522_SPI, SPI_I2S_FLAG_RXNE) == RESET);
+    return SPI_I2S_ReceiveData(RC522_SPI);
 }
 /////////////////////////////////////////////////////////////////////
 //功    能：寻卡
@@ -335,11 +299,11 @@ static void CalulateCRC(unsigned char *pIndata, unsigned char  len, unsigned cha
 /////////////////////////////////////////////////////////////////////
 char PcdReset(void)
 {
-    SET_RC522RST;
+    GPIO_SetBits(RC522_PORT, RC522_PIN_RST);
     Delay_ms(1);
-    CLR_RC522RST;
+    GPIO_ResetBits(RC522_PORT, RC522_PIN_RST);
     Delay_ms(1);
-    SET_RC522RST;
+    GPIO_SetBits(RC522_PORT, RC522_PIN_RST);
     Delay_ms(1);
     WriteRawRC(CommandReg, PCD_RESETPHASE); //软复位RC522
     Delay_ms(1);
@@ -387,11 +351,11 @@ static unsigned char ReadRawRC(unsigned char Address)
     unsigned char  ucAddr;
     unsigned char ucResult = 0;
 
-    TCS_SET(0);
+    GPIO_ResetBits(RC522_PORT, RC522_PIN_CS);
     ucAddr = ((Address << 1) & 0x7E) | 0x80; // //读寄存器的时候，地址最高位为 1，最低位为0，1-6位取决于地址
-    Write_SPI(ucAddr);
-    ucResult = Read_SPI();
-    TCS_SET(1);
+    WriteRead_SPI(ucAddr);
+    ucResult = WriteRead_SPI(0);
+    GPIO_SetBits(RC522_PORT, RC522_PIN_CS);
     return ucResult;
 }
 
@@ -404,11 +368,11 @@ static void WriteRawRC(unsigned char  Address, unsigned char  value)
 {
     unsigned char ucAddr;
 
-    TCS_SET(0);
+    GPIO_ResetBits(RC522_PORT, RC522_PIN_CS);
     ucAddr = ((Address << 1) & 0x7E); //写寄存器的时候，地址最高位为 0，最低位为0，1-6位取决于地址
-    Write_SPI(ucAddr);
-    Write_SPI(value);
-    TCS_SET(1);
+    WriteRead_SPI(ucAddr);
+    WriteRead_SPI(value);
+    GPIO_SetBits(RC522_PORT, RC522_PIN_CS);
 }
 /////////////////////////////////////////////////////////////////////
 //功    能：置RC522寄存器位
