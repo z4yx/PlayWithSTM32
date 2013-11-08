@@ -58,15 +58,14 @@ int main(void)
 	LED_Config();
 	USART1_Config();
 	SysTick_Init();
+	RFID_Config();
 
+    LED_Board(LED_ON);
+    
 	while (1)
 	{
-		LED_Board(LED_ON);
 		Delay_ms(1000);
-		LED_Board(LED_OFF);
-		Delay_ms(1000);
-
-		USART1_printf(USART1, "hello\r\n");
+		RFID_Test();
 	}
 }
 
