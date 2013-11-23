@@ -39,19 +39,21 @@ void USART1_Config(void)
   USART_Cmd(USART1, ENABLE);
 }
 
-/*
- * 函数名：fputc
- * 描述  ：重定向c库函数printf到USART1
- * 输入  ：无
- * 输出  ：无
- * 调用  ：由printf调用
- */
-int fputc(int ch, FILE *f)
+int putchar(int ch)
 {
 /* 将Printf内容发往串口 */
   USART_SendData(USART1, (unsigned char) ch);
   while (!(USART1->SR & USART_FLAG_TXE));
  
+  return (ch);
+}
+
+int getchar()
+{
+  uint8_t ch;
+  while (SET != USART_GetFlagStatus(USART1, USART_FLAG_RXNE));
+  ch = USART_ReceiveData(USART1);
+  USART_ClearFlag(USART1, USART_FLAG_RXNE);
   return (ch);
 }
 
