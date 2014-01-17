@@ -1,0 +1,9 @@
+*.o
+*.lss
+*.lst
+*.map
+*.sym
+*.bin
+*.elf
+.dep
+
