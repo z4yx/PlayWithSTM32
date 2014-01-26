@@ -23,6 +23,7 @@
 #include "stm32f10x.h"
 #include "led.h"
 #include "usart1.h"
+#include "spi.h"
 #include "systick.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -58,6 +59,17 @@ int main(void)
 	LED_Config();
 	USART1_Config();
 	SysTick_Init();
+	SPI_Config(SPI1);
+
+	Delay_ms(1000);
+	LED_Board(LED_ON);
+	for(int i=0; i<3; i++){
+		if(0 != Web_Server()){
+			USART1_printf(USART1, "Failed to start server!\r\n");
+		}else{
+			break;
+		}
+	}
 
 	while (1)
 	{
