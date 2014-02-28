@@ -269,7 +269,6 @@ SD_Error SD_PowerON(void)
   SDIO_CmdInitStructure.SDIO_CPSM = SDIO_CPSM_Enable;
   SDIO_SendCommand(&SDIO_CmdInitStructure);
   errorstatus = CmdResp1Error(SDIO_APP_CMD);
-  USART1_printf(USART1,"SDIO_APP_CMD = %d\r\n", errorstatus);
 
   /* If errorstatus is Command TimeOut, it is a MMC card */
   /* If errorstatus is SD_OK it is a SD card: SD card 2.0 (voltage range mismatch)
@@ -1952,7 +1951,6 @@ SD_Error SD_ProcessIRQSrc(void)
 {
   uint32_t count = 0, restwords = 0;
 
-  USART1_printf(USART1, "SD_ProcessIRQSrc\r\n");
 
   if (DeviceMode == SD_INTERRUPT_MODE)
   {

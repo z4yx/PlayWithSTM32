@@ -54,15 +54,15 @@ SD_Error SDIO_Test(void)
         /* Read CSD/CID MSD registers */
         Status = SD_GetCardInfo( &SDCardInfo );
     }
+    USART1_printf(USART1,"SD_GetCardInfo Status=%d\r\n", Status);
 
     if (Status == SD_OK)
     {
-    	unsigned long a,b;
-		    
-	    a = SDCardInfo.SD_csd.DeviceSize + 1;
-	    b = 1 << (SDCardInfo.SD_csd.DeviceSizeMul + 2);
 
-	    USART1_printf("SD Card: %d Blocks, Block size %d \r\n", a*b, 1<<SDCardInfo.SD_csd.RdBlockLen);
+	    USART1_printf(USART1, "CardCapacity: %dK, %d Blocks, Block Size %d \r\n",
+	    	SDCardInfo.CardCapacity/1024,
+	    	SDCardInfo.CardCapacity/SDCardInfo.CardBlockSize,
+	    	SDCardInfo.CardBlockSize);
     }
 
     if (Status == SD_OK) {
