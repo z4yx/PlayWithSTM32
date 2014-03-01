@@ -25,6 +25,7 @@
 #include "usart1.h"
 #include "systick.h"
 #include "sdio.h"
+#include "ff.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
     * @{
@@ -50,39 +51,73 @@ SD_Error SDIO_Test(void)
     /* SD Init */
     Status = SD_Init();
 
-    if (Status == SD_OK) {
-        /* Read CSD/CID MSD registers */
-        Status = SD_GetCardInfo( &SDCardInfo );
-    }
-    USART1_printf(USART1,"SD_GetCardInfo Status=%d\r\n", Status);
+    if(Status != SD_OK)
+        return Status;
 
-    if (Status == SD_OK)
-    {
+    /* Read CSD/CID MSD registers */
+    Status = SD_GetCardInfo( &SDCardInfo );
 
-	    USART1_printf(USART1, "CardCapacity: %dK, %d Blocks, Block Size %d \r\n",
-	    	SDCardInfo.CardCapacity/1024,
-	    	SDCardInfo.CardCapacity/SDCardInfo.CardBlockSize,
-	    	SDCardInfo.CardBlockSize);
-    }
+    if(Status != SD_OK)
+        return Status;
 
-    if (Status == SD_OK) {
-        /* Select Card */
-        Status = SD_SelectDeselect( (u32) (SDCardInfo.RCA << 16) );
-    }
+    USART1_printf(USART1, "CardCapacity: %dK, %d Blocks, Block Size %d \r\n",
+    	SDCardInfo.CardCapacity/1024,
+    	SDCardInfo.CardCapacity/SDCardInfo.CardBlockSize,
+    	SDCardInfo.CardBlockSize);
 
-    if (Status == SD_OK) {
-        /* set bus wide */
-        Status = SD_EnableWideBusOperation( SDIO_BusWide_1b );
-    }
+    Status = SD_SelectDeselect( (u32) (SDCardInfo.RCA << 16) );
+    if(Status != SD_OK)
+        return Status;
 
-    /* Set Device Transfer Mode to DMA */
-    if (Status == SD_OK) {
-        /* 任选一种都可以工作 */
-        Status = SD_SetDeviceMode( SD_DMA_MODE );
-        //Status = SD_SetDeviceMode( SD_POLLING_MODE );
-        //Status = SD_SetDeviceMode( SD_INTERRUPT_MODE );
-    }
+    Status = SD_EnableWideBusOperation( SDIO_BusWide_1b );
+    if(Status != SD_OK)
+        return Status;
+
+    Status = SD_SetDeviceMode(SD_DMA_MODE);
+    if(Status != SD_OK)
+        return Status;
+
     return ( Status );
+}
+
+static void Fatfs_Test(void)
+{
+    FATFS fs;
+    FIL fw,fr;
+    UINT cnt;
+    BYTE buf[] = "hello world";
+
+    if(FR_OK != f_mount(0,&fs)){
+        USART1_printf(USART1, "Failed to mount SD card!\r\n");
+        return;
+    }
+    if(FR_OK != f_open(&fw, "demo.txt", FA_WRITE | FA_OPEN_ALWAYS)){
+        USART1_printf(USART1, "Failed to open file for writing!\r\n");
+        return;
+    }
+
+    f_write(&fw, buf, sizeof(buf), &cnt);
+
+    USART1_printf(USART1, "%d Bytes Written\r\n", (int)cnt);
+
+    f_close(&fw);
+
+    if(FR_OK != f_open(&fr, "demo.txt", FA_OPEN_EXISTING | FA_READ)){
+        USART1_printf(USART1, "Failed to open file for reading!\r\n");
+        return;
+    }
+
+    f_read(&fr, buf, sizeof(buf), &cnt);
+
+    USART1_printf(USART1, "%d Bytes Read\r\n", (int)cnt);
+    
+    buf[cnt] = 0;
+
+    USART1_printf(USART1, "File content: %s\r\n", buf);
+
+    f_close(&fr);
+
+    f_mount(0, 0);
 }
 
 /**
@@ -104,8 +139,15 @@ int main(void)
     SysTick_Init();
 
     SD_NVIC_Configuration();
+
+    Delay_ms(500);
+
     SD_Error err = SDIO_Test();
-    USART1_printf(USART1, "SD_Error: %d\r\n", err);
+    if(err != SD_OK)
+        USART1_printf(USART1, "SD_Error: %d\r\n", err);
+    else {
+        Fatfs_Test();
+    }
 
     while (1) {
         LED_Board(LED_ON);

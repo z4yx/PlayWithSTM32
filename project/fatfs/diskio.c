@@ -1,0 +1,135 @@
+/*-----------------------------------------------------------------------*/
+/* Low level disk I/O module skeleton for FatFs     (C)ChaN, 2007        */
+/*-----------------------------------------------------------------------*/
+/* This is a stub disk I/O module that acts as front end of the existing */
+/* disk I/O modules and attach it to FatFs module with common interface. */
+/*-----------------------------------------------------------------------*/
+
+#include "diskio.h"
+#include "stm32f10x.h"
+#include "usart1.h"
+#include "sdio.h"
+
+#define SECTOR_SIZE            512 /* Block Size in Bytes */
+
+
+u32 buff2[512/4];
+/*-----------------------------------------------------------------------*/
+/* Inidialize a Drive                                                    */
+
+DSTATUS disk_initialize (
+	BYTE drv				/* Physical drive nmuber (0..) */
+)
+{
+	SD_Error  Status;
+	/* Supports only single drive */
+	if (drv)
+	{
+		return STA_NOINIT;
+	}
+/*-------------------------- SD Init ----------------------------- */
+  Status = SD_Init();
+	if (Status!=SD_OK )
+	{
+		return STA_NOINIT;
+	}
+	else
+	{
+		return RES_OK;
+	}
+
+}
+
+
+
+/*-----------------------------------------------------------------------*/
+/* Return Disk Status                                                    */
+
+DSTATUS disk_status (
+	BYTE drv		/* Physical drive nmuber (0..) */
+)
+{
+	return RES_OK;
+}
+
+
+
+/*-----------------------------------------------------------------------*/
+/* Read Sector(s)                                                        */
+
+DRESULT disk_read (
+	BYTE drv,		/* Physical drive nmuber (0..) */
+	BYTE *buff,		/* Data buffer to store read data */
+	DWORD sector,	/* Sector address (LBA) */
+	BYTE count		/* Number of sectors to read (1..255) */
+)
+{
+
+    USART1_printf(USART1, "disk_read: %d\r\n", count);
+	if(count==1)
+        {
+          SD_ReadBlock(sector << 9 ,buff2,SECTOR_SIZE);
+          memcpy(buff,buff2,SECTOR_SIZE);
+	}
+	else
+        {
+          SD_ReadMultiBlocks(sector << 9 ,buff2,SECTOR_SIZE,count);
+          memcpy(buff,buff2,SECTOR_SIZE * count);
+	}
+
+	return RES_OK;
+}
+
+
+
+/*-----------------------------------------------------------------------*/
+/* Write Sector(s)                                                       */
+
+#if _READONLY == 0
+DRESULT disk_write (
+	BYTE drv,			/* Physical drive nmuber (0..) */
+	const BYTE *buff,	/* Data to be written */
+	DWORD sector,		/* Sector address (LBA) */
+	BYTE count			/* Number of sectors to write (1..255) */
+)
+{
+
+    USART1_printf(USART1, "disk_write: %d\r\n", count);
+	if(count==1)
+        {
+          memcpy(buff2,buff,SECTOR_SIZE);
+          SD_WriteBlock(sector << 9 ,buff2,SECTOR_SIZE);
+	}
+	else
+        {
+          memcpy(buff2,buff,SECTOR_SIZE * count);
+          SD_WriteMultiBlocks(sector << 9 ,buff2,SECTOR_SIZE,count);
+	}
+	return RES_OK;
+}
+#endif /* _READONLY */
+
+
+
+
+/*-----------------------------------------------------------------------*/
+/* Miscellaneous Functions                                               */
+
+DRESULT disk_ioctl (
+	BYTE drv,		/* Physical drive nmuber (0..) */
+	BYTE ctrl,		/* Control code */
+	void *buff		/* Buffer to send/receive control data */
+)
+{
+	return RES_OK;
+}
+							 
+/*-----------------------------------------------------------------------*/
+/* Get current time                                                      */
+/*-----------------------------------------------------------------------*/ 
+DWORD get_fattime(void)
+{
+
+ 	return 0;
+
+} 

@@ -90,6 +90,7 @@ SRC_DIR = ../
 # SRC files
 SRC = $(SRC_DIR)led.c $(SRC_DIR)systick.c $(SRC_DIR)usart1.c $(SRC_DIR)main.c $(SRC_DIR)stm32f10x_it.c $(SRC_DIR)system_stm32f10x.c
 SRC += $(SRC_DIR)sdio.c
+SRC += $(SRC_DIR)fatfs/ff.c $(SRC_DIR)fatfs/diskio.c $(SRC_DIR)fatfs/option/ccsbcs.c
 SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/misc.c
 SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
 SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c
@@ -152,6 +153,7 @@ LINKERSCRIPTPATH = ./
 #     Each directory must be seperated by a space.
 #EXTRAINCDIRS = ../.. ../../utils ../../lib_src
 EXTRAINCDIRS = ../
+EXTRAINCDIRS += ../fatfs
 EXTRAINCDIRS += ../../Libraries/STM32F10x_StdPeriph_Driver/inc 
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/CoreSupport
