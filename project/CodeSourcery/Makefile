@@ -89,9 +89,9 @@ SRC_DIR = ../
 
 # SRC files
 SRC = $(SRC_DIR)led.c $(SRC_DIR)systick.c $(SRC_DIR)usart1.c $(SRC_DIR)main.c $(SRC_DIR)stm32f10x_it.c $(SRC_DIR)system_stm32f10x.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
+SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
+SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_USB-FS-Device_Driver/src/*.c)
+SRC += $(wildcard $(SRC_DIR)usb/src/*.c)
 
 # List C source files here which must be compiled in ARM-Mode.
 # use file-extension c for "c-only"-files
@@ -151,6 +151,8 @@ EXTRAINCDIRS = ../
 EXTRAINCDIRS += ../../Libraries/STM32F10x_StdPeriph_Driver/inc 
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/CoreSupport
+EXTRAINCDIRS += ../../Libraries/STM32_USB-FS-Device_Driver/inc 
+EXTRAINCDIRS += ../usb/inc
 
 # List any extra directories to look for library files here.
 #     Each directory must be seperated by a space.
