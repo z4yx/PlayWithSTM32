@@ -24,6 +24,8 @@
 #include "led.h"
 #include "usart1.h"
 #include "systick.h"
+#include "usbcommon.h"
+#include "usb_lib.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
 	* @{
@@ -58,6 +60,12 @@ int main(void)
 	LED_Config();
 	USART1_Config();
 	SysTick_Init();
+
+	USART1_printf(USART1, "Usb Init Started\r\n");
+	USBCommon_Init();
+	USB_Init();
+
+	USART1_printf(USART1, "Usb Init Succeeded\r\n");
 
 	while (1)
 	{
