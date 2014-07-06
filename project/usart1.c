@@ -33,6 +33,60 @@ void USART1_Config(void)
   USART_Cmd(USART1, ENABLE);
 }
 
+void USARTx_Config(USART_TypeDef* USARTx, u32 USART_BaudRate)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    USART_InitTypeDef USART_InitStructure;
+    GPIO_TypeDef *USART_GPIO;
+    u16 USART_Rx, USART_Tx;
+
+    switch((u32)USARTx) {
+        case (u32)USART1:
+            USART_GPIO = GPIOA;
+            USART_Tx = GPIO_Pin_9;
+            USART_Rx = GPIO_Pin_10;
+            break;
+        case (u32)USART2:
+            USART_GPIO = GPIOA;
+            USART_Tx = GPIO_Pin_2;
+            USART_Rx = GPIO_Pin_3;
+            break;
+        case (u32)USART3:
+            USART_GPIO = GPIOB;
+            USART_Tx = GPIO_Pin_10;
+            USART_Rx = GPIO_Pin_11;
+            break;
+
+        default:
+            return;
+    }
+
+    /* config USART clock */
+    RCC_USARTClockCmd(USARTx, ENABLE);
+
+    /* USART GPIO config */
+    RCC_GPIOClockCmd(USART_GPIO, ENABLE);
+    /* Configure USART Tx as alternate function push-pull */
+    GPIO_InitStructure.GPIO_Pin = USART_Tx;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(USART_GPIO, &GPIO_InitStructure);
+    /* Configure USART Rx as input*/
+    GPIO_InitStructure.GPIO_Pin = USART_Rx;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(USART_GPIO, &GPIO_InitStructure);
+
+    /* USART mode config */
+    USART_InitStructure.USART_BaudRate = USART_BaudRate;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No ;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_Init(USARTx, &USART_InitStructure);
+    USART_Cmd(USARTx, ENABLE);
+}
+
 int putchar(int ch)
 {
   USART_SendData(USART1, (unsigned char) ch);
