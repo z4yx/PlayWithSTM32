@@ -222,17 +222,6 @@ void USB_Interrupts_Config(void)
 *******************************************************************************/
 void USB_Cable_Config (FunctionalState NewState)
 {
-#if defined(STM32L1XX_MD) || defined (STM32L1XX_HD)|| (STM32L1XX_MD_PLUS)
-  if (NewState != DISABLE)
-  {
-    STM32L15_USB_CONNECT;
-  }
-  else
-  {
-    STM32L15_USB_DISCONNECT;
-  }  
-  
-#else /* USE_STM3210B_EVAL or USE_STM3210E_EVAL */
   if (NewState != DISABLE)
   {
     GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
@@ -241,5 +230,4 @@ void USB_Cable_Config (FunctionalState NewState)
   {
     GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
   }
-#endif /* STM32L1XX_MD */
 }

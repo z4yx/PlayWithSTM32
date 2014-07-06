@@ -63,7 +63,6 @@ void EP1_IN_Callback (void)
   uint16_t USB_Tx_ptr;
   uint16_t USB_Tx_length;
   
-  USART1_printf(USART1, "%s\r\n", __func__);
   if (USB_Tx_State == 1)
   {
     if (USART_Rx_length == 0) 
@@ -105,7 +104,6 @@ void EP3_OUT_Callback(void)
 {
   uint16_t USB_Rx_Cnt;
   
-  USART1_printf(USART1, "%s\r\n", __func__);
   /* Get the received data buffer and update the counter */
   USB_Rx_Cnt = USB_SIL_Read(EP3_OUT, USB_Rx_Buffer);
   

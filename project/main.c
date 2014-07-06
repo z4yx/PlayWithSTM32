@@ -62,8 +62,10 @@ int main(void)
 	SysTick_Init();
 
 	USART1_printf(USART1, "Usb Init Started\r\n");
+	LED_Board(LED_OFF);
 	USBCommon_Init();
 	USB_Init();
+	LED_Board(LED_ON);
 
 	USART1_printf(USART1, "Usb Init Succeeded\r\n");
 
