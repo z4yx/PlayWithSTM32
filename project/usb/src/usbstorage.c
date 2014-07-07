@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    usb_endp.c
+  * @file    hw_config.c
   * @author  MCD Application Team
   * @version V4.0.0
   * @date    21-January-2013
-  * @brief   Endpoint routines
+  * @brief   Hardware Configuration & Setup
   ******************************************************************************
   * @attention
   *
@@ -27,40 +27,38 @@
 
 
 /* Includes ------------------------------------------------------------------*/
+
+#include "usbstorage.h"
 #include "usb_lib.h"
-#include "usb_bot.h"
-#include "usb_istr.h"
+#include "usb_prop.h"
+#include "usb_desc.h"
+#include "usb_pwr.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+/* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-* Function Name  : EP1_IN_Callback
-* Description    : EP1 IN Callback Routine
+* Function Name  : MAL_Config
+* Description    : MAL_layer configuration
 * Input          : None.
-* Output         : None.
 * Return         : None.
 *******************************************************************************/
-void EP1_IN_Callback(void)
+void MAL_Config(void)
 {
-  Mass_Storage_In();
+  MAL_Init(0);
+
+// #if defined(STM32F10X_HD) || defined(STM32F10X_XL)
+//   /* Enable the FSMC Clock */
+//   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
+//   MAL_Init(1);
+// #endif /* STM32F10X_HD | STM32F10X_XL */
 }
 
-/*******************************************************************************
-* Function Name  : EP2_OUT_Callback.
-* Description    : EP2 OUT Callback Routine.
-* Input          : None.
-* Output         : None.
-* Return         : None.
-*******************************************************************************/
-void EP2_OUT_Callback(void)
-{
-  Mass_Storage_Out();
-}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

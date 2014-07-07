@@ -3,6 +3,7 @@
 #include "usb_desc.h"
 #include "usb_pwr.h"
 #include "usbcommon.h"
+#include "usbstorage.h"
 
 ErrorStatus HSEStartUpStatus;
 USART_InitTypeDef USART_InitStructure;
@@ -92,6 +93,9 @@ static void Set_System(void)
   EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
+  
+  /* MAL configuration */
+  MAL_Config();
 }
 
 /*******************************************************************************
@@ -251,8 +255,8 @@ void Get_SerialNum(void)
 
   if (Device_Serial0 != 0)
   {
-    IntToUnicode (Device_Serial0, &Virtual_Com_Port_StringSerial[2] , 8);
-    IntToUnicode (Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
+    IntToUnicode (Device_Serial0, &MASS_StringSerial[2] , 8);
+    IntToUnicode (Device_Serial1, &MASS_StringSerial[18], 4);
   }
 }
 
