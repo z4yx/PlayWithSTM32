@@ -23,6 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
+#include "sdioLL.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
   * @{
@@ -146,6 +147,13 @@ void SDIO_IRQHandler(void)
   /* Process All SDIO Interrupt Sources */
   SD_ProcessIRQSrc();
 }
+
+void SD_SDIO_DMA_IRQHANDLER(void)
+{
+  /* Process DMA2 Stream3 or DMA2 Stream6 Interrupt Sources */
+  SD_ProcessDMAIRQ();
+}
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

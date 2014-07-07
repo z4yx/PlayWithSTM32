@@ -23,6 +23,15 @@
   */
 #define SDIO_TRANSFER_CLK_DIV            ((uint8_t)0x1) 
 
+#define SD_SDIO_DMA                      DMA2
+#define SD_SDIO_DMA_CLK                  RCC_AHBPeriph_DMA2
+#define SD_SDIO_DMA_CHANNEL              DMA2_Channel4
+#define SD_SDIO_DMA_FLAG_TC              DMA2_FLAG_TC4
+#define SD_SDIO_DMA_FLAG_TE              DMA2_FLAG_TE4
+#define SD_SDIO_DMA_FLAG_HT              DMA2_FLAG_HT4
+#define SD_SDIO_DMA_FLAG_GL              DMA2_FLAG_GL4
+#define SD_SDIO_DMA_IRQn                 DMA2_Channel4_5_IRQn
+#define SD_SDIO_DMA_IRQHANDLER           DMA2_Channel4_5_IRQHandler
 /**
   * @}
   */ 

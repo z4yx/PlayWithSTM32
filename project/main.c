@@ -46,6 +46,8 @@
 SD_Error SDIO_Test(void)
 {
     SD_Error Status = SD_OK;
+    uint32_t DeviceSizeMul = 0, NumberOfBlocks = 0;
+    uint32_t Mass_Block_Count = 0, Mass_Block_Size = 0;
     SD_CardInfo SDCardInfo;
 
     /* SD Init */
@@ -60,10 +62,23 @@ SD_Error SDIO_Test(void)
     if(Status != SD_OK)
         return Status;
 
+    DeviceSizeMul = (SDCardInfo.SD_csd.DeviceSizeMul + 2);
+
+    if(SDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
+    {
+        Mass_Block_Count = (SDCardInfo.SD_csd.DeviceSize + 1) * 1024;
+    }
+    else
+    {
+        NumberOfBlocks  = ((1 << (SDCardInfo.SD_csd.RdBlockLen)) / 512);
+        Mass_Block_Count = ((SDCardInfo.SD_csd.DeviceSize + 1) * (1 << DeviceSizeMul) << (NumberOfBlocks/2));
+    }
+    Mass_Block_Size  = 512;
+    
     USART1_printf(USART1, "CardCapacity: %dK, %d Blocks, Block Size %d \r\n",
-    	SDCardInfo.CardCapacity/1024,
-    	SDCardInfo.CardCapacity/SDCardInfo.CardBlockSize,
-    	SDCardInfo.CardBlockSize);
+        Mass_Block_Size*Mass_Block_Count/1024,
+        Mass_Block_Count,
+        Mass_Block_Size);
 
     USART1_printf(USART1, "SD Card Init OK!\r\n");
 
