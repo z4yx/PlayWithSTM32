@@ -22,8 +22,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "led.h"
-#include "usart1.h"
 #include "systick.h"
+#include "common.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
 	* @{
@@ -59,6 +59,8 @@ int main(void)
 	USART1_Config();
 	SysTick_Init();
 
+    LOG_INFO("System Started");
+
 	while (1)
 	{
 		LED_Board(LED_ON);
@@ -66,7 +68,7 @@ int main(void)
 		LED_Board(LED_OFF);
 		Delay_ms(1000);
 
-		USART1_printf(USART1, "hello\r\n");
+        LOG_DBG("hello");
 	}
 }
 
