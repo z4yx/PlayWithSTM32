@@ -170,6 +170,11 @@ void USBWakeUp_IRQHandler(void)
   EXTI_ClearITPendingBit(EXTI_Line18);
 }
 
+void SDIO_IRQHandler(void)
+{
+  /* Process All SDIO Interrupt Sources */
+  SD_ProcessIRQSrc();
+}
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
