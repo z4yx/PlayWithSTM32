@@ -42,3 +42,22 @@ void Delay_ms(unsigned int ms)
         __WFI();                                                // Request Wait For Interrupt
 	}
 }
+
+/*
+ * 微秒级延时
+ */
+void Delay_us(unsigned int us)
+{
+	uint32_t val, last;
+	int32_t tmp = us*(SystemCoreClock/1000000);
+
+	last = SysTick->VAL;
+	while(tmp > 0) {
+		val = SysTick->VAL;
+		if(val <= last)
+			tmp -= last - val;
+		else
+			tmp -= last + SysTick->LOAD - val;
+		last = val;
+	}
+}

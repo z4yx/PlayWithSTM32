@@ -88,15 +88,11 @@ SRC_DIR = ../
 # use file-extension c for "c-only"-files
 
 # SRC files
-SRC = $(SRC_DIR)led.c $(SRC_DIR)systick.c $(SRC_DIR)usart1.c $(SRC_DIR)main.c $(SRC_DIR)stm32f10x_it.c $(SRC_DIR)system_stm32f10x.c
+SRC = $(SRC_DIR)led.c $(SRC_DIR)systick.c $(SRC_DIR)usart1.c $(SRC_DIR)common.c $(SRC_DIR)main.c $(SRC_DIR)stm32f10x_it.c
+SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
+SRC += $(SRC_DIR)../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c 
 SRC += $(SRC_DIR)sdio.c
 SRC += $(SRC_DIR)fatfs/ff.c $(SRC_DIR)fatfs/diskio.c $(SRC_DIR)fatfs/option/ccsbcs.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/misc.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_sdio.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c
-SRC += $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
 
 # List C source files here which must be compiled in ARM-Mode.
 # use file-extension c for "c-only"-files
@@ -231,7 +227,7 @@ ifneq ($(AT91LIBNOWARN),yes)
 #AT91-lib warnings with:
 CFLAGS += -Wcast-qual
 CONLYFLAGS += -Wmissing-prototypes 
-CONLYFLAGS += -Wstrict-prototypes
+# CONLYFLAGS += -Wstrict-prototypes
 CONLYFLAGS += -Wmissing-declarations
 endif
 
@@ -346,12 +342,12 @@ ALL_ASFLAGS = -mcpu=$(MCU) $(THUMB_IW) -I. -x assembler-with-cpp $(ASFLAGS)
 all: begin gccversion sizebefore build sizeafter finished end
 
 ifeq ($(FORMAT),ihex)
-build: elf hex lss sym
+build: elf hex
 hex: $(TARGET).hex
 IMGEXT=hex
 else 
 ifeq ($(FORMAT),binary)
-build: elf bin lss sym
+build: elf bin
 bin: $(TARGET).bin
 IMGEXT=bin
 else 
@@ -374,6 +370,9 @@ finished:
 end:
 	@echo $(MSG_END)
 	@echo
+
+flash: all
+	st-flash --reset write $(TARGET).bin 0x08000000
 
 
 # Display size of file.
