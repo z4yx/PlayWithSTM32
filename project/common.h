@@ -15,8 +15,10 @@
 
 extern void USART1_printf(USART_TypeDef* USARTx, char *Data, ...);
 
-#define DBG_MSG(format, ...) USART_printf(USART1, "[Debug]%s: " format "\r\n", __func__, __VA_ARGS__)
-#define ERR_MSG(format, ...) USART_printf(USART1, "[Error]%s: " format "\r\n", __func__, __VA_ARGS__)
+#define LOG_ERR(M, ...) USART1_printf(USART1, "[ERROR] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_WARN(M, ...) USART1_printf(USART1, "[WARN] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_INFO(M, ...) USART1_printf(USART1, "[INFO] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_DBG(M, ...) USART1_printf(USART1, "[DBG] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
  
 void RCC_GPIOClockCmd(GPIO_TypeDef* GPIOx, FunctionalState state);
 void RCC_USARTClockCmd(USART_TypeDef* USARTx, FunctionalState state);
