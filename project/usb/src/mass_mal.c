@@ -84,10 +84,9 @@ uint16_t MAL_Write(uint8_t lun, uint32_t Memory_Offset, uint32_t *Writebuff, uin
   switch (lun)
   {
     case 0:
-    // Status = SD_WriteMultiBlocks((uint8_t*)Writebuff, Memory_Offset, Transfer_Length,1);
-    SD_WriteBlock((uint8_t*)Writebuff, Memory_Offset, Transfer_Length);
+    Status = SD_WriteMultiBlocks((uint8_t*)Writebuff, Memory_Offset, Transfer_Length,1);
 // #if defined(USE_STM3210E_EVAL) || defined(USE_STM32L152D_EVAL)
-    // Status = SD_WaitWriteOperation();  
+    Status = SD_WaitWriteOperation();  
     while(SD_GetStatus() != SD_TRANSFER_OK);
       if ( Status != SD_OK )
       {
@@ -119,12 +118,9 @@ uint16_t MAL_Read(uint8_t lun, uint32_t Memory_Offset, uint32_t *Readbuff, uint1
   switch (lun)
   {
     case 0:
-      // SD_ReadMultiBlocks((uint8_t*)Readbuff, Memory_Offset, Transfer_Length, 1);
-      // LOG_DBG("SD_ReadBlock(%d,%d,%d)", Readbuff, Memory_Offset, Transfer_Length);
-      SD_ReadBlock((uint8_t*)Readbuff, Memory_Offset, Transfer_Length);
-
+      SD_ReadMultiBlocks((uint8_t*)Readbuff, Memory_Offset, Transfer_Length, 1);
 // #if defined(USE_STM3210E_EVAL) || defined(USE_STM32L152D_EVAL)
-      // Status = SD_WaitReadOperation();
+      Status = SD_WaitReadOperation();
       while(SD_GetStatus() != SD_TRANSFER_OK)
       {
       }
@@ -176,7 +172,7 @@ uint16_t MAL_GetStatus (uint8_t lun)
     {
       SD_GetCardInfo(&mSDCardInfo);
       LOG_DBG("SD_GetCardInfo()");
-      // SD_SelectDeselect((uint32_t) (mSDCardInfo.RCA << 16));
+      SD_SelectDeselect((uint32_t) (mSDCardInfo.RCA << 16));
       DeviceSizeMul = (mSDCardInfo.SD_csd.DeviceSizeMul + 2);
 
       if(mSDCardInfo.CardType == SDIO_HIGH_CAPACITY_SD_CARD)
@@ -190,8 +186,8 @@ uint16_t MAL_GetStatus (uint8_t lun)
       }
       Mass_Block_Size[0]  = 512;
 
-      // Status = SD_SelectDeselect((uint32_t) (mSDCardInfo.RCA << 16)); 
-      // Status = SD_EnableWideBusOperation(SDIO_BusWide_4b); 
+      Status = SD_SelectDeselect((uint32_t) (mSDCardInfo.RCA << 16)); 
+      Status = SD_EnableWideBusOperation(SDIO_BusWide_4b); 
       if ( Status != SD_OK )
       {
         return MAL_FAIL;
