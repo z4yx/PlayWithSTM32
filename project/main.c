@@ -58,8 +58,22 @@ int main(void)
 	LED_Config();
 	USART1_Config();
 	SysTick_Init();
+	Lcd_Init();
 
     LOG_INFO("System Started");
+
+    LCD12864_Clr_Scr();
+    LCD12864_Set_XY(1, 1);
+    LCD12864_Write_String(1,0,"Hello, World");
+    //                        GBK encoding string
+    LCD12864_Write_String(2,0,"\xc4\xe3\xba\xc3\xa3\xac\xca\xc0\xbd\xe7");
+    LCD12864_Write_String(3,0,"1234567890");
+    for(char i=0;i<8;i++){
+    	uint32_t c = 0xa2d9+i;
+    	char buf[3] = {c>>8,c&0xff,0};
+	    LCD12864_Write_String(4,i,buf);
+    }
+
 
 	while (1)
 	{
