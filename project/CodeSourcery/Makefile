@@ -213,7 +213,6 @@ CFLAGS += -Wall -Wimplicit
 # CFLAGS += -Wcast-align
 CFLAGS += -Wpointer-arith -Wswitch
 CFLAGS += -Wredundant-decls -Wreturn-type -Wshadow -Wunused
-CFLAGS += -Wa,-adhlns=$(subst $(suffix $<),.lst,$<) 
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 # flags only for C
@@ -235,7 +234,7 @@ CPPFLAGS = -fno-rtti -fno-exceptions
 #  -Wa,...:    tell GCC to pass this to the assembler.
 #  -ahlns:     create listing
 #  -g$(DEBUG): have the assembler create line number information
-ASFLAGS = $(ADEFS) -Wa,-adhlns=$(<:.S=.lst),--g$(DEBUG)
+ASFLAGS = $(ADEFS) -Wa,--g$(DEBUG)
 
 
 #Additional libraries.
