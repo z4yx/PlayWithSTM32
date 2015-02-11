@@ -259,8 +259,7 @@ MATH_LIB = -lm
 #    --cref:    add cross reference to  map file
 LDFLAGS = -Wl,-Map=$(TARGET).map -Wl,-cref -Wl,--gc-sections
 LDFLAGS += $(NEWLIBLPC) $(MATH_LIB)
-LDFLAGS += -lc -lgcc 
-LDFLAGS += $(CPLUSPLUS_LIB)
+LDFLAGS += --specs=nano.specs --specs=nosys.specs
 LDFLAGS += $(patsubst %,-L%,$(EXTRA_LIBDIRS))
 LDFLAGS += $(patsubst %,-l%,$(EXTRA_LIBS))
 
