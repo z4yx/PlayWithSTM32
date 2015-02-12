@@ -1,5 +1,6 @@
 
 #include "usart1.h"
+#include "common.h"
 #include <stdarg.h>
 
 
@@ -87,7 +88,7 @@ void USARTx_Config(USART_TypeDef* USARTx, u32 USART_BaudRate)
     USART_Cmd(USARTx, ENABLE);
 }
 
-int putchar(int ch)
+int USART_putchar(int ch)
 {
   USART_SendData(USART1, (unsigned char) ch);
   while (!(USART1->SR & USART_FLAG_TXE));
@@ -95,7 +96,7 @@ int putchar(int ch)
   return (ch);
 }
 
-int getchar()
+int USART_getchar()
 {
   uint8_t ch;
   while (SET != USART_GetFlagStatus(USART1, USART_FLAG_RXNE));

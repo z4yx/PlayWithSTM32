@@ -88,7 +88,7 @@ SRC_DIR = ../
 # use file-extension c for "c-only"-files
 
 # SRC files
-SRC = $(SRC_DIR)led.c $(SRC_DIR)systick.c $(SRC_DIR)usart1.c $(SRC_DIR)common.c $(SRC_DIR)main.c $(SRC_DIR)stm32f10x_it.c
+SRC = $(wildcard $(SRC_DIR)*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
 SRC += $(SRC_DIR)../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c 
 
