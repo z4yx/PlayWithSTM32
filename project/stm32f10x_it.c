@@ -141,6 +141,14 @@ void SysTick_Handler(void)
   IncSysTickCounter();
 }
 
+void TIM4_IRQHandler(void)
+{
+  if(SET == TIM_GetITStatus(TIM4, TIM_IT_Update)) {
+    CPAL_I2C_TIMEOUT_Manager();
+    TIM_ClearITPendingBit(TIM4, TIM_IT_Update);
+  }
+}
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

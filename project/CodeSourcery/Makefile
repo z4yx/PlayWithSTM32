@@ -90,6 +90,8 @@ SRC_DIR = ../
 # SRC files
 SRC = $(wildcard $(SRC_DIR)*.c)
 SRC += $(wildcard $(SRC_DIR)../Libraries/STM32F10x_StdPeriph_Driver/src/*.c)
+SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_CPAL_Driver/src/*.c)
+SRC += $(wildcard $(SRC_DIR)../Libraries/STM32_CPAL_Driver/devices/stm32f10x/*.c)
 SRC += $(SRC_DIR)../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c 
 
 # List C source files here which must be compiled in ARM-Mode.
@@ -148,6 +150,8 @@ LINKERSCRIPTPATH = ./
 #EXTRAINCDIRS = ../.. ../../utils ../../lib_src
 EXTRAINCDIRS = ../
 EXTRAINCDIRS += ../../Libraries/STM32F10x_StdPeriph_Driver/inc 
+EXTRAINCDIRS += ../../Libraries/STM32_CPAL_Driver/inc 
+EXTRAINCDIRS += ../../Libraries/STM32_CPAL_Driver/devices/stm32f10x 
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 EXTRAINCDIRS += ../../Libraries/CMSIS/CM3/CoreSupport
 
