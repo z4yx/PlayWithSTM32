@@ -23,6 +23,7 @@
 #include "stm32f10x.h"
 #include "led.h"
 #include "systick.h"
+#include "bmp180.h"
 #include "common.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Examples
@@ -61,14 +62,21 @@ int main(void)
 
     LOG_INFO("System Started");
 
+    BMP180_Init();
+
 	while (1)
 	{
-		LED_Board(LED_ON);
+		double T, P;
+		int8_t delay;
 		Delay_ms(1000);
-		LED_Board(LED_OFF);
-		Delay_ms(1000);
-
-        LOG_DBG("hello");
+		delay = BMP180_StartTemperature();
+		Delay_ms(delay);
+		BMP180_GetTemperature(&T);
+		delay = BMP180_StartPressure(0);
+		Delay_ms(delay);
+		BMP180_GetPressure(&P, &T);
+		LOG_DBG("P: %dPa, T: %dC", (int)P, (int)T);
+		LOG_DBG("Att: %d", (int)BMP180_Altitude(P, 101352));
 	}
 }
 
