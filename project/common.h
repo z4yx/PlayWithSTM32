@@ -3,18 +3,9 @@
 
 #include "stm32f10x.h"
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
-#ifndef bool
-#define bool uint8_t
-#define true 1
-#define TRUE true
-#define false 0
-#define FALSE false
-#endif
 
 #define LOG_ERR(M, ...) printf("[ERROR] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #define LOG_WARN(M, ...) printf("[WARN] (%s:%d) " M "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
